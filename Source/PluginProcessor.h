@@ -63,11 +63,19 @@ public:
     // Declare the AudioProcessorValueTreeState instance
     juce::AudioProcessorValueTreeState apvts{ *this, nullptr, "reverbParameters", createParameterLayout()};
    
-
-   
-
-
 private:
+
+    using ReverbProcessor = juce::dsp::Reverb;
+   
+        
+    
+
+    using StereoChain = juce::dsp::ProcessorChain<ReverbProcessor>;
+
+    StereoChain reverbChain;
+
+
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JuceReverbAudioProcessor)
 };
