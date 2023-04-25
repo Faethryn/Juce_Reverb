@@ -64,13 +64,7 @@ public:
     juce::AudioProcessorValueTreeState apvts{ *this, nullptr, "reverbParameters", createParameterLayout()};
    
 
-    // Declare your reverb parameter values
-    float roomSize;
-    float damping;
-    float wetLevel;
-    float dryLevel;
-    float width;
-    float freeze;
+   
 
 
 private:

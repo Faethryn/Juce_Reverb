@@ -167,7 +167,9 @@ bool JuceReverbAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* JuceReverbAudioProcessor::createEditor()
 {
-    return new JuceReverbAudioProcessorEditor (*this);
+   // return new JuceReverbAudioProcessorEditor (*this);
+
+    return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -191,6 +193,10 @@ void JuceReverbAudioProcessor::setStateInformation (const void* data, int sizeIn
 
 
      layout.add(std::make_unique<juce::AudioParameterFloat>("RoomSize", "RoomSize", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
+     layout.add(std::make_unique<juce::AudioParameterFloat>("Damping", "Damping", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
+     layout.add(std::make_unique<juce::AudioParameterFloat>("WetLevel", "WetLevel", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
+     layout.add(std::make_unique<juce::AudioParameterFloat>("DryLevel", "RoomSize", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
+     layout.add(std::make_unique<juce::AudioParameterFloat>("Width", "Width", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
 
 
      return layout;
