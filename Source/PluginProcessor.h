@@ -13,15 +13,15 @@
 //==============================================================================
 /**
 */
-class JUCE_DemoAudioProcessor  : public juce::AudioProcessor
+class JuceReverbAudioProcessor  : public juce::AudioProcessor
                             #if JucePlugin_Enable_ARA
                              , public juce::AudioProcessorARAExtension
                             #endif
 {
 public:
     //==============================================================================
-    JUCE_DemoAudioProcessor();
-    ~JUCE_DemoAudioProcessor() override;
+    JuceReverbAudioProcessor();
+    ~JuceReverbAudioProcessor() override;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -56,7 +56,24 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+
+
+    static   juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+
+    // Declare the AudioProcessorValueTreeState instance
+    juce::AudioProcessorValueTreeState apvts{ *this, nullptr, "reverbParameters", createParameterLayout()};
+   
+
+    // Declare your reverb parameter values
+    float roomSize;
+    float damping;
+    float wetLevel;
+    float dryLevel;
+    float width;
+    float freeze;
+
+
 private:
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JUCE_DemoAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JuceReverbAudioProcessor)
 };
