@@ -104,7 +104,21 @@ void JuceReverbAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
 
     reverbChain.prepare(spec);
 
+    auto chainSettings = getChainSettings(apvts);
+    auto& reverbFromChain = reverbChain.template get<0>();
+    auto reverbParams = reverbFromChain.getParameters();
+    reverbParams.roomSize = chainSettings.RoomSize;
+    reverbParams.damping = chainSettings.Damping;
+    reverbParams.wetLevel = chainSettings.WetLevel;
+    reverbParams.dryLevel = chainSettings.DryLevel;
+    reverbParams.width = chainSettings.Width;
 
+    reverbFromChain.setParameters(reverbParams);
+
+
+
+
+   
 
   
     
@@ -162,6 +176,17 @@ void JuceReverbAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
+    auto chainSettings = getChainSettings(apvts);
+    auto& reverbFromChain = reverbChain.template get<0>();
+    auto reverbParams = reverbFromChain.getParameters();
+    reverbParams.roomSize = chainSettings.RoomSize;
+    reverbParams.damping = chainSettings.Damping;
+    reverbParams.wetLevel = chainSettings.WetLevel;
+    reverbParams.dryLevel = chainSettings.DryLevel;
+    reverbParams.width = chainSettings.Width;
+
+    reverbFromChain.setParameters(reverbParams);
+
     juce::dsp::AudioBlock<float> inputBlock(buffer);
 
     // Create AudioBlock objects for the left and right output channels
@@ -204,6 +229,21 @@ void JuceReverbAudioProcessor::setStateInformation (const void* data, int sizeIn
     // whose contents will have been created by the getStateInformation() call.
 }
 
+ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts)
+{
+    ChainSettings settings;
+
+    settings.RoomSize = apvts.getRawParameterValue("RoomSize")->load();
+    settings.Damping = apvts.getRawParameterValue("Damping")->load();
+    settings.WetLevel = apvts.getRawParameterValue("WetLevel")->load();
+    settings.DryLevel = apvts.getRawParameterValue("DryLevel")->load();
+    settings.Width = apvts.getRawParameterValue("Width")->load();
+
+
+    return settings;
+}
+
+
 
  juce::AudioProcessorValueTreeState::ParameterLayout JuceReverbAudioProcessor::createParameterLayout()
 {
@@ -213,7 +253,7 @@ void JuceReverbAudioProcessor::setStateInformation (const void* data, int sizeIn
      layout.add(std::make_unique<juce::AudioParameterFloat>("RoomSize", "RoomSize", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
      layout.add(std::make_unique<juce::AudioParameterFloat>("Damping", "Damping", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
      layout.add(std::make_unique<juce::AudioParameterFloat>("WetLevel", "WetLevel", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
-     layout.add(std::make_unique<juce::AudioParameterFloat>("DryLevel", "RoomSize", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
+     layout.add(std::make_unique<juce::AudioParameterFloat>("DryLevel", "DryLevel", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
      layout.add(std::make_unique<juce::AudioParameterFloat>("Width", "Width", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
 
 

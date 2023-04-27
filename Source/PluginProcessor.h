@@ -10,6 +10,15 @@
 
 #include <JuceHeader.h>
 
+
+struct ChainSettings
+{
+    float RoomSize{ 0.1f }, Damping{ 0.1f }, WetLevel{ 1.f }, DryLevel{ 0.0f }, Width{ 0.1f };
+};
+
+ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
+
+
 //==============================================================================
 /**
 */
@@ -68,7 +77,7 @@ private:
     using ReverbProcessor = juce::dsp::Reverb;
    
         
-    
+    ReverbProcessor reverbProcess;
 
     using StereoChain = juce::dsp::ProcessorChain<ReverbProcessor>;
 
