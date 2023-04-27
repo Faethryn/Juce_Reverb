@@ -16,8 +16,8 @@ struct ChainSettings
     float RoomSize{ 0.1f }, Damping{ 0.1f }, WetLevel{ 1.f }, DryLevel{ 0.0f }, Width{ 0.1f };
 };
 
-ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
 
+ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
 
 //==============================================================================
 /**
@@ -65,6 +65,8 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+   
+
 
 
     static   juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
@@ -83,6 +85,7 @@ private:
 
     StereoChain reverbChain;
 
+    void UpdateReverbParams(const ChainSettings& chainSettings);
 
 
     //==============================================================================

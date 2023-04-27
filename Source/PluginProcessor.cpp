@@ -105,15 +105,7 @@ void JuceReverbAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     reverbChain.prepare(spec);
 
     auto chainSettings = getChainSettings(apvts);
-    auto& reverbFromChain = reverbChain.template get<0>();
-    auto reverbParams = reverbFromChain.getParameters();
-    reverbParams.roomSize = chainSettings.RoomSize;
-    reverbParams.damping = chainSettings.Damping;
-    reverbParams.wetLevel = chainSettings.WetLevel;
-    reverbParams.dryLevel = chainSettings.DryLevel;
-    reverbParams.width = chainSettings.Width;
-
-    reverbFromChain.setParameters(reverbParams);
+    UpdateReverbParams(chainSettings);
 
 
 
@@ -177,15 +169,8 @@ void JuceReverbAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         buffer.clear (i, 0, buffer.getNumSamples());
 
     auto chainSettings = getChainSettings(apvts);
-    auto& reverbFromChain = reverbChain.template get<0>();
-    auto reverbParams = reverbFromChain.getParameters();
-    reverbParams.roomSize = chainSettings.RoomSize;
-    reverbParams.damping = chainSettings.Damping;
-    reverbParams.wetLevel = chainSettings.WetLevel;
-    reverbParams.dryLevel = chainSettings.DryLevel;
-    reverbParams.width = chainSettings.Width;
-
-    reverbFromChain.setParameters(reverbParams);
+   
+    UpdateReverbParams(chainSettings);
 
     juce::dsp::AudioBlock<float> inputBlock(buffer);
 
@@ -243,7 +228,18 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts)
     return settings;
 }
 
+void JuceReverbAudioProcessor::UpdateReverbParams(const ChainSettings& chainSettings)
+{
+    auto& reverbFromChain = reverbChain.template get<0>();
+    auto reverbParams = reverbFromChain.getParameters();
+    reverbParams.roomSize = chainSettings.RoomSize;
+    reverbParams.damping = chainSettings.Damping;
+    reverbParams.wetLevel = chainSettings.WetLevel;
+    reverbParams.dryLevel = chainSettings.DryLevel;
+    reverbParams.width = chainSettings.Width;
 
+    reverbFromChain.setParameters(reverbParams);
+}
 
  juce::AudioProcessorValueTreeState::ParameterLayout JuceReverbAudioProcessor::createParameterLayout()
 {
