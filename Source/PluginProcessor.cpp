@@ -13,16 +13,28 @@
 //==============================================================================
 JuceReverbAudioProcessor::JuceReverbAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
-                     #endif
-                       )
+    : AudioProcessor(BusesProperties()
+#if ! JucePlugin_IsMidiEffect
+#if ! JucePlugin_IsSynth
+        .withInput("Input", juce::AudioChannelSet::stereo(), true)
+#endif
+        .withOutput("Output", juce::AudioChannelSet::stereo(), true)
+#endif
+    )
 #endif
 {
+
+   
+
+    
+  
+    
+
+  
+    
+   
+
+
 }
 
 JuceReverbAudioProcessor::~JuceReverbAudioProcessor()
@@ -107,7 +119,14 @@ void JuceReverbAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     auto chainSettings = getChainSettings(apvts);
     UpdateReverbParams(chainSettings);
 
+    convChain.reset();
+    convChain.prepare(spec);
 
+    if (savedFile.existsAsFile())
+    {
+
+        UpdateConvolutionIR(savedFile);
+    }
 
 
    
@@ -169,6 +188,8 @@ void JuceReverbAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
         buffer.clear (i, 0, buffer.getNumSamples());
 
     auto chainSettings = getChainSettings(apvts);
+
+    UpdateToggles(apvts);
    
     UpdateReverbParams(chainSettings);
 
@@ -177,11 +198,28 @@ void JuceReverbAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     // Create AudioBlock objects for the left and right output channels
    
 
+    if (reverbToggle == true)
+    {
+
     juce::dsp::ProcessContextReplacing<float> context(inputBlock);
 
     reverbChain.process(context);
 
+    }
 
+    if (convToggle == true)
+    {
+
+    juce::dsp::ProcessContextReplacing<float> convContext(inputBlock);
+
+        if (convChain.template get<0>().getCurrentIRSize() > 0)
+         {
+
+            convChain.process(convContext);
+         }
+
+    }
+    
 
 
     
@@ -195,9 +233,9 @@ bool JuceReverbAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* JuceReverbAudioProcessor::createEditor()
 {
-   // return new JuceReverbAudioProcessorEditor (*this);
+    return new JuceReverbAudioProcessorEditor (*this);
 
-    return new juce::GenericAudioProcessorEditor(*this);
+   // return new juce::GenericAudioProcessorEditor(*this);
 }
 
 //==============================================================================
@@ -206,12 +244,50 @@ void JuceReverbAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+
+
+   auto& stringValueTree = apvts.state.getOrCreateChildWithName("fileNameTree", nullptr);
+   juce::String fileName = savedFile.getFullPathName();
+    stringValueTree.setProperty("fileName", fileName, nullptr);
+    
+   
+
+    juce::MemoryOutputStream mos(destData, true);
+    apvts.state.writeToStream(mos);
+
+   
+
+   
+
+
 }
 
 void JuceReverbAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+
+    auto tree = juce::ValueTree::readFromData(data, sizeInBytes);
+    if (tree.isValid())
+    {
+       
+       
+
+        apvts.replaceState(tree);
+       
+       
+
+       auto stringValueTree = apvts.state.getOrCreateChildWithName("fileNameTree", nullptr);
+       
+
+        UpdateFiles(stringValueTree.getProperty("fileName", juce::String()));
+    }
+
+   
+
+    
+
+
 }
 
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts)
@@ -239,7 +315,84 @@ void JuceReverbAudioProcessor::UpdateReverbParams(const ChainSettings& chainSett
     reverbParams.width = chainSettings.Width;
 
     reverbFromChain.setParameters(reverbParams);
+
+
 }
+
+void JuceReverbAudioProcessor::UpdateToggles(juce::AudioProcessorValueTreeState& apvts)
+{
+    convToggle = apvts.getRawParameterValue("ConvolutionToggle")->load();
+    reverbToggle = apvts.getRawParameterValue("ReverbToggle")->load();
+
+}
+
+void JuceReverbAudioProcessor::LoadButtonPressed()
+{
+    LoadingIRFile();
+
+}
+
+
+
+
+
+void JuceReverbAudioProcessor::LoadingIRFile()
+{
+
+     fileChooser = std::make_unique<juce::FileChooser>("Select an IR file to open",
+         root,
+          "*");
+    const auto fileChooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles | juce::FileBrowserComponent::canSelectDirectories;
+
+    fileChooser->launchAsync(fileChooserFlags, [this](const juce::FileChooser& chooser)
+        {
+
+            juce::File selectedFile ( chooser.getResult());
+
+            if (selectedFile.getFileExtension() == ".wav" || selectedFile.getFileExtension() == ".mp3")
+            {
+                savedFile = selectedFile;
+                root = selectedFile.getParentDirectory().getFullPathName();
+                UpdateConvolutionIR(selectedFile);
+            }
+
+        });
+
+   
+}
+
+void JuceReverbAudioProcessor::UpdateFiles(juce::String filePath)
+{
+ 
+    
+
+    savedFile = juce::File(filePath);
+    root = savedFile;
+
+    if (savedFile.existsAsFile())
+    {
+    UpdateConvolutionIR(savedFile);
+
+    }
+
+}
+
+
+
+
+
+
+void JuceReverbAudioProcessor::UpdateConvolutionIR(juce::File& irFile)
+{
+    auto isStereo = ConvolutionProcessor::Stereo::yes;
+    auto istrimmed = ConvolutionProcessor::Trim::no;
+
+    convChain.template get<0>().loadImpulseResponse(irFile, isStereo, istrimmed, 0);
+
+}
+
+
+
 
  juce::AudioProcessorValueTreeState::ParameterLayout JuceReverbAudioProcessor::createParameterLayout()
 {
@@ -251,8 +404,15 @@ void JuceReverbAudioProcessor::UpdateReverbParams(const ChainSettings& chainSett
      layout.add(std::make_unique<juce::AudioParameterFloat>("WetLevel", "WetLevel", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
      layout.add(std::make_unique<juce::AudioParameterFloat>("DryLevel", "DryLevel", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
      layout.add(std::make_unique<juce::AudioParameterFloat>("Width", "Width", juce::NormalisableRange<float>(0.f, 1.f, 0.01f, 1.f), 0.1f));
-
-
+     auto reverbToggleAttributes = juce::AudioParameterBoolAttributes().withStringFromValueFunction([](auto x, auto) { return x ? "On" : "Off"; })
+         .withLabel("enabled");
+     layout.add(std::make_unique<juce::AudioParameterBool>("ReverbToggle", "ReverbToggle", false, reverbToggleAttributes));
+     auto convToggleAttributes = juce::AudioParameterBoolAttributes().withStringFromValueFunction([](auto x, auto) { return x ? "On" : "Off"; })
+         .withLabel("enabled");
+     layout.add(std::make_unique<juce::AudioParameterBool>("ConvolutionToggle", "ConvolutionToggle", true, convToggleAttributes));
+   
+    
+   
      return layout;
 }
 

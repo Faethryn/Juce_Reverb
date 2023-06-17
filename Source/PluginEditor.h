@@ -11,6 +11,16 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 
+
+struct CustomHorizontalSlider : juce::Slider
+{
+
+    CustomHorizontalSlider() : juce::Slider(juce::Slider::SliderStyle::LinearHorizontal, juce::Slider::TextEntryBoxPosition::TextBoxLeft)
+    {
+        
+    }
+};
+
 //==============================================================================
 /**
 */
@@ -28,6 +38,41 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     JuceReverbAudioProcessor& audioProcessor;
+
+
+    juce::TextButton loadBtn;
+
+    juce::ToggleButton reverbToggle;
+
+    juce::ToggleButton convolutionToggle;
+
+    juce::Label reverbLabel;
+
+    juce::Label convolutionLabel;
+
+
+    CustomHorizontalSlider roomSizeSlider, dampingSlider, wetSlider, drySlider, widthSlider;
+
+    juce::Label roomSizeLabel, dampingLabel, wetLabel, dryLabel, widthLabel;
+
+
+
+    using APVTS = juce::AudioProcessorValueTreeState;
+
+    using SliderAttachment = APVTS::SliderAttachment;
+
+    SliderAttachment roomsizeSliderAttachment,
+          dampingSliderAttachment,
+          wetSliderAttachment,
+          drySliderAttachment,
+          widthSliderAttachment;
+
+    using ToggleAttachment = APVTS::ButtonAttachment;
+
+    ToggleAttachment convolutionToggleAttachment, reverbToggleAttachment;
+
+
+    std::vector<juce::Component*> GetComps();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JuceReverbAudioProcessorEditor)
 };

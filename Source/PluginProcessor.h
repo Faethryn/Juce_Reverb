@@ -17,6 +17,7 @@ struct ChainSettings
 };
 
 
+
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts);
 
 //==============================================================================
@@ -71,22 +72,56 @@ public:
 
     static   juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
 
+    
+
     // Declare the AudioProcessorValueTreeState instance
     juce::AudioProcessorValueTreeState apvts{ *this, nullptr, "reverbParameters", createParameterLayout()};
+
+    
+
+    void LoadButtonPressed();
    
 private:
+
+    juce::File root, savedFile; 
+
+   std::unique_ptr<juce::FileChooser> fileChooser;
 
     using ReverbProcessor = juce::dsp::Reverb;
    
         
     ReverbProcessor reverbProcess;
 
+    using ConvolutionProcessor = juce::dsp::Convolution;
+
+    ConvolutionProcessor convProcess;
+
     using StereoChain = juce::dsp::ProcessorChain<ReverbProcessor>;
+
+    using ConvStereoChain = juce::dsp::ProcessorChain<ConvolutionProcessor>;
+
 
     StereoChain reverbChain;
 
+    ConvStereoChain convChain;
+
     void UpdateReverbParams(const ChainSettings& chainSettings);
 
+    void UpdateToggles(juce::AudioProcessorValueTreeState& apvts);
+
+    void UpdateConvolutionIR(juce::File& irFile);
+
+    void UpdateFiles(juce::String filePath);
+
+    
+    
+
+    void LoadingIRFile();
+
+
+    bool reverbToggle = false;
+
+    bool convToggle = true; 
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JuceReverbAudioProcessor)
