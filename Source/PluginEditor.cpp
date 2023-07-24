@@ -16,6 +16,11 @@
 //==============================================================================
 JuceReverbAudioProcessorEditor::JuceReverbAudioProcessorEditor(JuceReverbAudioProcessor& p)
     : AudioProcessorEditor(&p), audioProcessor(p),
+    roomSizeSlider(*audioProcessor.apvts.getParameter("RoomSize"), ""),
+    dampingSlider(*audioProcessor.apvts.getParameter("Damping"), ""),
+    wetSlider(*audioProcessor.apvts.getParameter("WetLevel"), ""),
+    drySlider(*audioProcessor.apvts.getParameter("DryLevel"), ""),
+    widthSlider(*audioProcessor.apvts.getParameter("Width"), ""),
     roomsizeSliderAttachment(audioProcessor.apvts, "RoomSize", roomSizeSlider),
     dampingSliderAttachment(audioProcessor.apvts, "Damping", dampingSlider),
     wetSliderAttachment(audioProcessor.apvts, "WetLevel", wetSlider),

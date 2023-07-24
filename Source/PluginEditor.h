@@ -12,13 +12,51 @@
 #include "PluginProcessor.h"
 
 
-struct CustomHorizontalSlider : juce::Slider
+struct LookAndFeel : juce::LookAndFeel_V4
+{
+    void drawRotarySlider(juce::Graphics&,
+        int x, int y, int width, int height,
+        float sliderPosProportional,
+        float rotaryStartAngle,
+        float rotaryEndAngle,
+        juce::Slider&) override {}
+
+   /* void drawToggleButton(juce::Graphics& g,
+        juce::ToggleButton& toggleButton,
+        bool shouldDrawButtonAsHighlighted,
+        bool shouldDrawButtonAsDown) override;*/
+};
+
+struct RotarySliderWithLabels : juce::Slider
 {
 
-    CustomHorizontalSlider() : juce::Slider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
+    RotarySliderWithLabels(juce::RangedAudioParameter& rap, const juce::String& unitSuffix) :
+        juce::Slider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow),
+        param(&rap),
+        suffix(unitSuffix)
     {
-        
+        setLookAndFeel(&lnf);
     }
+
+    ~RotarySliderWithLabels()
+    {
+        setLookAndFeel(nullptr);
+    }
+
+    void paint(juce::Graphics& g) override {}
+
+    juce::Rectangle<int> getSliderBounds() const ;
+
+    int GetTextHeight() const { return 14; }
+
+    juce::String GetDisplayString() const ;
+
+private:
+
+    LookAndFeel lnf;
+
+    juce::RangedAudioParameter* param;
+    juce::String suffix; 
 };
 
 //==============================================================================
@@ -51,7 +89,7 @@ private:
     juce::Label convolutionLabel;
 
 
-    CustomHorizontalSlider roomSizeSlider, dampingSlider, wetSlider, drySlider, widthSlider;
+    RotarySliderWithLabels roomSizeSlider, dampingSlider, wetSlider, drySlider, widthSlider;
 
     juce::Label roomSizeLabel, dampingLabel, wetLabel, dryLabel, widthLabel;
 
