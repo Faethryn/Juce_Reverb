@@ -31,6 +31,26 @@ JuceReverbAudioProcessorEditor::JuceReverbAudioProcessorEditor(JuceReverbAudioPr
     addAndMakeVisible(loadBtn);
     addAndMakeVisible(reverbToggle);
     addAndMakeVisible(convolutionToggle);
+   
+    reverbToggle.onClick = [this] 
+    {
+        if (reverbToggle.getToggleState() == true && convolutionToggle.getToggleState() == true)
+        {
+            convolutionToggle.setToggleState(false, juce::sendNotification);
+
+        }
+    };
+
+    convolutionToggle.onClick = [this]
+    {
+        if (convolutionToggle.getToggleState() == true && reverbToggle.getToggleState() == true)
+        {
+           reverbToggle.setToggleState(false, juce::sendNotification);
+
+        }
+    };
+    
+
 
     for (auto* comp : GetComps())
     {
