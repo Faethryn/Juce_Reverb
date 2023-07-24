@@ -15,7 +15,7 @@
 struct CustomHorizontalSlider : juce::Slider
 {
 
-    CustomHorizontalSlider() : juce::Slider(juce::Slider::SliderStyle::LinearHorizontal, juce::Slider::TextEntryBoxPosition::TextBoxLeft)
+    CustomHorizontalSlider() : juce::Slider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxLeft)
     {
         
     }
@@ -70,6 +70,9 @@ private:
     using ToggleAttachment = APVTS::ButtonAttachment;
 
     ToggleAttachment convolutionToggleAttachment, reverbToggleAttachment;
+
+    const double frequencyResponseHeightRatio = (1.0 / 5.0);
+
 
 
     std::vector<juce::Component*> GetComps();

@@ -89,9 +89,46 @@ JuceReverbAudioProcessorEditor::~JuceReverbAudioProcessorEditor()
 void JuceReverbAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.fillAll (juce::Colours::black);
 
-   
+    auto bounds = getLocalBounds();
+    auto responseArea = bounds.removeFromTop(bounds.getHeight() * frequencyResponseHeightRatio);
+
+    auto w = responseArea.getWidth();
+
+    auto sampleRate = audioProcessor.getSampleRate();
+
+    std::vector<double> mags;
+
+    mags.resize(w);
+
+    for (int i{ 0 }; i < w; ++i)
+    {
+        double mag = 1.0f;
+        auto freq = juce::mapToLog10(double(i) / double(w), 20.0, 20000.0);
+        mags[i] = juce::Decibels::gainToDecibels(mag);
+    }
+
+    juce::Path frequencyCurve;
+
+    const double outputMin = responseArea.getBottom();
+    const double outputMax = responseArea.getY();
+
+    auto map = [outputMin, outputMax](double input)
+    {
+        return juce::jmap(input, -24.0, 24.0, outputMin, outputMax);
+    };
+
+    frequencyCurve.startNewSubPath(responseArea.getX(), map(mags.front()));
+
+    for (size_t i = 1; i < mags.size(); ++i)
+    {
+        frequencyCurve.lineTo(responseArea.getX() + i, map(mags[i]));
+    }
+    
+    g.setColour(juce::Colours::white);
+    g.strokePath(frequencyCurve, juce::PathStrokeType(2.f));
+
 }
 
 void JuceReverbAudioProcessorEditor::resized()
@@ -99,9 +136,10 @@ void JuceReverbAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     auto bounds = getLocalBounds();
-    auto responseArea = bounds.removeFromTop(bounds.getHeight() * (1.0 / 5.0));
+    auto responseArea = bounds.removeFromTop(bounds.getHeight() * frequencyResponseHeightRatio);
 
-    auto reverbArea = bounds.removeFromLeft(bounds.getWidth() * 0.5);
+    auto reverbArea = bounds.removeFromTop(bounds.getHeight() * 0.75);
+    bounds.removeFromTop(bounds.getHeight() / 6);
     auto convolutionArea = bounds;
 
     reverbToggle.setBounds(reverbArea.removeFromTop(reverbArea.getHeight() * (1.0 / 6.0)));
@@ -130,7 +168,7 @@ void JuceReverbAudioProcessorEditor::resized()
     widthSlider.setBounds(reverbArea.removeFromTop(reverbArea.getHeight() * (1.0 / 1.0)));
 
 
-    auto   convolutionButtonBounds = convolutionArea.removeFromTop(convolutionArea.getHeight() * (1.0 / 6.0));
+    auto   convolutionButtonBounds = convolutionArea;
     auto convolutionToggleBounds = convolutionButtonBounds.removeFromLeft(convolutionButtonBounds.getWidth() * 0.5);
     convolutionToggle.setBounds(convolutionToggleBounds);
 
