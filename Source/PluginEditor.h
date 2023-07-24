@@ -19,7 +19,7 @@ struct LookAndFeel : juce::LookAndFeel_V4
         float sliderPosProportional,
         float rotaryStartAngle,
         float rotaryEndAngle,
-        juce::Slider&) override {}
+        juce::Slider& ) override;
 
    /* void drawToggleButton(juce::Graphics& g,
         juce::ToggleButton& toggleButton,
@@ -43,7 +43,7 @@ struct RotarySliderWithLabels : juce::Slider
         setLookAndFeel(nullptr);
     }
 
-    void paint(juce::Graphics& g) override {}
+    void paint(juce::Graphics& g) override;
 
     juce::Rectangle<int> getSliderBounds() const ;
 
@@ -111,7 +111,9 @@ private:
 
     const double frequencyResponseHeightRatio = (1.0 / 5.0);
 
+    const double radialSize = (1.0 / 5.0);
 
+    
 
     std::vector<juce::Component*> GetComps();
 
