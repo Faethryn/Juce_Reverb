@@ -15,7 +15,7 @@
 struct CustomHorizontalSlider : juce::Slider
 {
 
-    CustomHorizontalSlider() : juce::Slider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxLeft)
+    CustomHorizontalSlider() : juce::Slider(juce::Slider::SliderStyle::RotaryVerticalDrag, juce::Slider::TextEntryBoxPosition::TextBoxBelow)
     {
         
     }
