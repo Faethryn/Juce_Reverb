@@ -29,31 +29,7 @@ struct LookAndFeel : juce::LookAndFeel_V4
 
 
 
-struct PowerButton : juce::ToggleButton { };
 
-struct AnalyzerButton : juce::ToggleButton
-{
-    void resized() override
-    {
-        auto bounds = getLocalBounds();
-        auto insetRect = bounds.reduced(4);
-
-        randomPath.clear();
-
-        juce::Random r;
-
-        randomPath.startNewSubPath(insetRect.getX(),
-            insetRect.getY() + insetRect.getHeight() * r.nextFloat());
-
-        for (auto x = insetRect.getX() + 1; x < insetRect.getRight(); x += 2)
-        {
-            randomPath.lineTo(x,
-                insetRect.getY() + insetRect.getHeight() * r.nextFloat());
-        }
-    }
-
-    juce::Path randomPath;
-};
 
 //==============================================================================
 
@@ -143,11 +119,15 @@ private:
 
     const double radialSize = (1.0 / 5.0);
 
+    const double ToggleSize = (1.0 / 8.0);
+
    /* juce::Image cheeseKnobImage = juce::ImageCache::getFromMemory(BinaryData::Cheese_knob_png, BinaryData::Cheese_knob_pngSize);*/
 
     juce::Colour fontColor = juce::Colours::crimson;
 
     std::vector<juce::Component*> GetComps();
+
+    LookAndFeel lnf;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JuceReverbAudioProcessorEditor)
 };

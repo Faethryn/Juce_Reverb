@@ -78,8 +78,8 @@ void LookAndFeel::drawToggleButton(juce::Graphics& g,
 {
     using namespace juce;
 
-    if (auto* pb = dynamic_cast<PowerButton*>(&toggleButton))
-    {
+    
+    
         Path powerButton;
 
         auto bounds = toggleButton.getLocalBounds();
@@ -105,23 +105,13 @@ void LookAndFeel::drawToggleButton(juce::Graphics& g,
 
         PathStrokeType pst(2.f, PathStrokeType::JointStyle::curved);
 
-        auto color = toggleButton.getToggleState() ? Colours::dimgrey : Colour(0u, 172u, 1u);
+        auto color = toggleButton.getToggleState() ? juce::Colours::crimson : Colours::dimgrey;
 
         g.setColour(color);
         g.strokePath(powerButton, pst);
         g.drawEllipse(r, 2);
-    }
-    else if (auto* analyzerButton = dynamic_cast<AnalyzerButton*>(&toggleButton))
-    {
-        auto color = !toggleButton.getToggleState() ? Colours::dimgrey : Colour(0u, 172u, 1u);
-
-        g.setColour(color);
-
-        auto bounds = toggleButton.getLocalBounds();
-        g.drawRect(bounds);
-
-        g.strokePath(analyzerButton->randomPath, PathStrokeType(1.f));
-    }
+    
+   
 }
 
 //==============================================================================
@@ -171,6 +161,9 @@ JuceReverbAudioProcessorEditor::JuceReverbAudioProcessorEditor(JuceReverbAudioPr
     addAndMakeVisible(loadBtn);
     addAndMakeVisible(reverbToggle);
     addAndMakeVisible(convolutionToggle);
+
+    reverbToggle.setLookAndFeel(&lnf);
+    convolutionToggle.setLookAndFeel(&lnf);
    
     reverbToggle.onClick = [this] 
     {
@@ -223,6 +216,8 @@ JuceReverbAudioProcessorEditor::JuceReverbAudioProcessorEditor(JuceReverbAudioPr
 
 JuceReverbAudioProcessorEditor::~JuceReverbAudioProcessorEditor()
 {
+    reverbToggle.setLookAndFeel(nullptr);
+    convolutionToggle.setLookAndFeel(nullptr);
 }
 
 //==============================================================================
@@ -292,17 +287,25 @@ void JuceReverbAudioProcessorEditor::resized()
     bounds.removeFromTop(bounds.getHeight() / 6);
     auto convolutionArea = bounds;
 
-    reverbToggle.setBounds(reverbArea.removeFromTop(reverbArea.getHeight() * (1.0 / 6.0)));
-    auto reverbToggleArea = reverbToggle.getBounds();
 
+
+    auto reverbToggleArea = reverbArea;
+    reverbToggleArea = reverbToggleArea.removeFromLeft(reverbToggleArea.getWidth() * ToggleSize);
+    
+    reverbToggle.setBounds(reverbToggleArea.removeFromTop(reverbArea.getHeight() * (1.0 / 6.0)));
+
+     reverbToggleArea = reverbToggle.getBounds();
+     auto reverbLabelArea = reverbArea.removeFromTop(reverbArea.getHeight() * (1.0 / 6.0));
     
 
     
 
-    reverbLabel.setBounds(reverbToggleArea.removeFromRight(reverbToggleArea.getWidth() * 0.8));
+    reverbLabel.setBounds(reverbLabelArea.removeFromRight(reverbLabelArea.getWidth() * 0.8));
     reverbLabel.setColour(juce::Label::textColourId,fontColor);
 
     double sliderSize{};
+
+    reverbArea.removeFromTop(reverbArea.getHeight() * (1.0 / 6.0));
 
     if (reverbArea.getHeight() < reverbArea.getWidth())
     {
@@ -384,11 +387,12 @@ void JuceReverbAudioProcessorEditor::resized()
 
     auto   convolutionButtonBounds = convolutionArea;
     auto convolutionToggleBounds = convolutionButtonBounds.removeFromLeft(convolutionButtonBounds.getWidth() * 0.5);
-    convolutionToggle.setBounds(convolutionToggleBounds);
+    convolutionLabel.setBounds(convolutionToggleBounds.removeFromRight(convolutionToggleBounds.getWidth() * 0.8));
+
+    convolutionToggle.setBounds(convolutionArea.removeFromLeft(convolutionArea.getWidth()* ToggleSize));
 
     convolutionLabel.setColour(juce::Label::textColourId, fontColor);
 
-    convolutionLabel.setBounds(convolutionToggleBounds.removeFromRight(convolutionToggleBounds.getWidth() * 0.8));
 
     loadBtn.setBounds(convolutionButtonBounds);
 
