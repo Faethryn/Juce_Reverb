@@ -113,7 +113,9 @@ private:
 
     const double radialSize = (1.0 / 5.0);
 
-    
+   /* juce::Image cheeseKnobImage = juce::ImageCache::getFromMemory(BinaryData::Cheese_knob_png, BinaryData::Cheese_knob_pngSize);*/
+
+
 
     std::vector<juce::Component*> GetComps();
 

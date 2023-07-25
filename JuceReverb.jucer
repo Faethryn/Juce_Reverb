@@ -3,6 +3,11 @@
 <JUCERPROJECT id="NxDW95" name="JuceReverb" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="cX38p9" name="JuceReverb">
+    <GROUP id="{4604BAC0-9AAB-4FE4-B198-24B33E44C106}" name="BinaryData">
+      <FILE id="xh5DHG" name="Cheese knob.png" compile="0" resource="1" file="../../../../Creative Cloud Files Personal/Audio Programming/Cheese knob.png"/>
+      <FILE id="OySJRP" name="Kraft single.png" compile="0" resource="1"
+            file="../../../../Creative Cloud Files Personal/Audio Programming/Kraft single.png"/>
+    </GROUP>
     <GROUP id="{996BFE72-5F09-A56F-6316-2FD329A7BC5F}" name="Source">
       <FILE id="bJGZwB" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
