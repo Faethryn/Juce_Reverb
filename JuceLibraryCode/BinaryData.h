@@ -9,7 +9,7 @@
 namespace BinaryData
 {
     extern const char*   Cheese_knob_png;
-    const int            Cheese_knob_pngSize = 103991;
+    const int            Cheese_knob_pngSize = 104024;
 
     extern const char*   Kraft_single_png;
     const int            Kraft_single_pngSize = 287469;

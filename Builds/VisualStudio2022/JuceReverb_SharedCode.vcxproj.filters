@@ -5900,7 +5900,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\..\..\Creative Cloud Files Personal\Audio Programming\Cheese knob.png">
+    <None Include="..\..\..\..\..\..\Creative Cloud Files\Audio Programming\Cheese knob.png">
       <Filter>JuceReverb\BinaryData</Filter>
     </None>
     <None Include="..\..\..\..\..\..\Creative Cloud Files Personal\Audio Programming\Kraft single.png">

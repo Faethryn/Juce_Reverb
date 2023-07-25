@@ -4,7 +4,7 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="cX38p9" name="JuceReverb">
     <GROUP id="{4604BAC0-9AAB-4FE4-B198-24B33E44C106}" name="BinaryData">
-      <FILE id="xh5DHG" name="Cheese knob.png" compile="0" resource="1" file="../../../../Creative Cloud Files Personal/Audio Programming/Cheese knob.png"/>
+      <FILE id="eWn4eB" name="Cheese knob.png" compile="0" resource="1" file="../../../../Creative Cloud Files/Audio Programming/Cheese knob.png"/>
       <FILE id="OySJRP" name="Kraft single.png" compile="0" resource="1"
             file="../../../../Creative Cloud Files Personal/Audio Programming/Kraft single.png"/>
     </GROUP>
