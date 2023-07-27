@@ -30,6 +30,12 @@ void LookAndFeel::drawRotarySlider(juce::Graphics& g,
 
     auto center = bounds.getCentre();
 
+    auto size = bounds.getHeight();
+    if (size > bounds.getWidth())
+    {
+        size = bounds.getWidth();
+    }
+
    /* juce::Path p;
 
     juce::Rectangle<float> r;
@@ -57,7 +63,9 @@ void LookAndFeel::drawRotarySlider(juce::Graphics& g,
 
     knobImage.setImage(juce::ImageCache::getFromMemory(BinaryData::Cheese_knobV2_png, BinaryData::Cheese_knobV2_pngSize));
 
-    knobImage.setBounds(x, y, width, height);
+    knobImage.setBounds(center.getX() - (size / 2.0), center.getY() - (size / 2.0), size, size);
+
+    bounds.setBounds(center.getX() - (size / 2.0), center.getY() - (size / 2.0), size, size);
    
    // knobImage.draw(g,1.f, juce::AffineTransform::identity);
 
@@ -83,6 +91,8 @@ void LookAndFeel::drawToggleButton(juce::Graphics& g,
         Path powerButton;
 
         auto bounds = toggleButton.getLocalBounds();
+
+        auto centre = bounds.getCentre();
 
         auto size = bounds.getHeight();
 
@@ -203,6 +213,9 @@ JuceReverbAudioProcessorEditor::JuceReverbAudioProcessorEditor(JuceReverbAudioPr
     convolutionLabel.setText("Convolution Toggle",juce::dontSendNotification);
     reverbLabel.setText("Reverb Toggle", juce::dontSendNotification);
 
+    convolutionLabel.setJustificationType(juce::Justification::centredLeft);
+    reverbLabel.setJustificationType(juce::Justification::centredLeft);
+
     roomSizeLabel.setText("Roomsize", juce::dontSendNotification);
        
        dampingLabel.setText("Damping", juce::dontSendNotification);
@@ -213,7 +226,12 @@ JuceReverbAudioProcessorEditor::JuceReverbAudioProcessorEditor(JuceReverbAudioPr
        
        widthLabel.setText("Width", juce::dontSendNotification);
 
-    
+    roomSizeLabel.setJustificationType(juce::Justification::centredTop);
+
+    dampingLabel.setJustificationType(juce::Justification::centredTop);
+    wetLabel.setJustificationType(juce::Justification::centredTop);
+    dryLabel.setJustificationType(juce::Justification::centredTop);
+    widthLabel.setJustificationType(juce::Justification::centredTop);
 
     setSize (500, 500);
 }
@@ -287,55 +305,32 @@ void JuceReverbAudioProcessorEditor::resized()
     auto bounds = getLocalBounds();
     auto responseArea = bounds.removeFromTop(bounds.getHeight() * frequencyResponseHeightRatio);
 
-    auto reverbArea = bounds.removeFromTop(bounds.getHeight() * 0.75);
-    bounds.removeFromTop(bounds.getHeight() / 6);
-    auto convolutionArea = bounds;
-
-
-
-    auto reverbToggleArea = reverbArea;
-    reverbToggleArea = reverbToggleArea.removeFromLeft(reverbToggleArea.getWidth() * ToggleSize);
-    
-    reverbToggle.setBounds(reverbToggleArea.removeFromTop(reverbArea.getHeight() * (1.0 / 6.0)));
-
-     reverbToggleArea = reverbToggle.getBounds();
-     auto reverbLabelArea = reverbArea.removeFromTop(reverbArea.getHeight() * (1.0 / 6.0));
-    
+   
+    auto convolutionArea = bounds.removeFromBottom(bounds.getHeight() * convolutionSize);
 
     
 
-    reverbLabel.setBounds(reverbLabelArea.removeFromRight(reverbLabelArea.getWidth() * 0.8));
+    auto reverbToggleArea = bounds.removeFromTop(getLocalBounds().getHeight() * ToggleSize);
+
+
+    auto reverbToggleButtonArea = reverbToggleArea.removeFromLeft(reverbToggleArea.getHeight());
+    
+    reverbToggle.setBounds(reverbToggleButtonArea);
+
+    auto topRowArea = bounds.removeFromTop(bounds.getHeight() / 2.0);
+
+
+
+    
+  
+    
+
+    
+
+    reverbLabel.setBounds(reverbToggleArea);
     reverbLabel.setColour(juce::Label::textColourId,fontColor);
 
-    double sliderSize{};
-
-    reverbArea.removeFromTop(reverbArea.getHeight() * (1.0 / 6.0));
-
-    if (reverbArea.getHeight() < reverbArea.getWidth())
-    {
-        sliderSize = reverbArea.getWidth() * radialSize;
-
-    }
-    else
-    {
-        sliderSize = reverbArea.getHeight() * radialSize;
-    }
-
-    int currentSliderRow = 0;
-
-    int currentSliderColumn = 1;
-
-    int rowWidth = (reverbArea.getWidth() / 6.0);
-
-  
-
-    int columnHeight = (reverbArea.getHeight() / 2.0);
-
-    int middleCompensation =  rowWidth / 2;
-
-    int columnCompensation = columnHeight / 2;
-
-    int TextCompensation = sliderSize / 2;
+   
 
     //label setting
 
@@ -347,58 +342,67 @@ void JuceReverbAudioProcessorEditor::resized()
 
   //  roomSizeLabel.setBounds(reverbArea.removeFromTop(reverbArea.getHeight() * (1.0 / 10.0)));
 
-    roomSizeSlider.setBounds((rowWidth * currentSliderRow) + middleCompensation, (columnHeight * currentSliderColumn) + columnCompensation, sliderSize, sliderSize);
+    roomSizeSlider.setBounds(topRowArea.removeFromLeft( topRowArea.getWidth() /3.0));
 
-    roomSizeLabel.setBounds((rowWidth * currentSliderRow) + middleCompensation, (columnHeight * currentSliderColumn) + columnCompensation  - (reverbArea.getHeight() * (1.0 / 10.0)), sliderSize, reverbArea.getHeight() * (1.0 / 10.0));
+    auto labelHeightFirstRow = roomSizeSlider.getBounds().getY() /*- (getLocalBounds().getHeight() * labelHeight)*/ /*- (roomSizeSlider.getBounds().getHeight() /2)*/;
 
-    ++currentSliderRow;
-    currentSliderColumn = 2;
+    roomSizeLabel.setBounds(roomSizeSlider.getBounds().getX(), (labelHeightFirstRow), roomSizeSlider.getBounds().getWidth(), getLocalBounds().getHeight() * labelHeight);
+    
+  
 
   //  dampingLabel.setBounds(reverbArea.removeFromTop(reverbArea.getHeight() * (1.0 / 8.0)));
 
-    dampingSlider.setBounds((rowWidth * currentSliderRow) + middleCompensation, (columnHeight * currentSliderColumn) + columnCompensation, sliderSize, sliderSize);
-    dampingLabel.setBounds((rowWidth * currentSliderRow) + middleCompensation, (columnHeight * currentSliderColumn) + columnCompensation  - (reverbArea.getHeight() * (1.0 / 10.0)), sliderSize, reverbArea.getHeight() * (1.0 / 10.0));
+    dampingSlider.setBounds(topRowArea.removeFromLeft(topRowArea.getWidth() / 2.0));
+    dampingLabel.setBounds(dampingSlider.getBounds().getX(), (labelHeightFirstRow), dampingSlider.getBounds().getWidth(), getLocalBounds().getHeight() * labelHeight);
+    
 
 
-    ++currentSliderRow;
-    currentSliderColumn = 1;
+   
 
 
   //  dryLabel.setBounds(reverbArea.removeFromTop(reverbArea.getHeight() * (1.0 / 6.0)));
 
-    drySlider.setBounds((rowWidth * currentSliderRow) + middleCompensation, (columnHeight * currentSliderColumn) + columnCompensation, sliderSize, sliderSize);
-    dryLabel.setBounds((rowWidth * currentSliderRow) + middleCompensation, (columnHeight * currentSliderColumn) + columnCompensation  - (reverbArea.getHeight() * (1.0 / 10.0)), sliderSize, reverbArea.getHeight() * (1.0 / 10.0));
+    drySlider.setBounds(topRowArea);
+    dryLabel.setBounds(drySlider.getBounds().getX(), (labelHeightFirstRow), drySlider.getBounds().getWidth(), getLocalBounds().getHeight() * labelHeight);
 
-    ++currentSliderRow;
-    currentSliderColumn = 2;
+ 
 
 
   //  wetLabel.setBounds(reverbArea.removeFromTop(reverbArea.getHeight() * (1.0 / 4.0)));
 
-    wetSlider.setBounds((rowWidth * currentSliderRow) + middleCompensation, (columnHeight * currentSliderColumn)+ columnCompensation, sliderSize, sliderSize);
-    wetLabel.setBounds((rowWidth * currentSliderRow) + middleCompensation, (columnHeight * currentSliderColumn) + columnCompensation  - (reverbArea.getHeight() * (1.0 / 10.0)), sliderSize, reverbArea.getHeight() * (1.0 / 10.0));
+    wetSlider.setBounds(bounds.removeFromLeft(bounds.getWidth() / 2));
+
+    auto labelHeightSecondRow = wetSlider.getBounds().getY() /*- (getLocalBounds().getHeight() * labelHeight)*/ /*- (wetSlider.getBounds().getHeight() / 2)*/;
+
+
+    wetLabel.setBounds(wetSlider.getBounds().getX(), (labelHeightSecondRow), wetSlider.getBounds().getWidth(), getLocalBounds().getHeight() * labelHeight);
 
   //  widthLabel.setBounds(reverbArea.removeFromTop(reverbArea.getHeight() * (1.0 / 2.0)));
-    currentSliderColumn = 1;
-
-    ++currentSliderRow;
+  
 
 
 
-    widthSlider.setBounds((rowWidth * currentSliderRow) + middleCompensation, (columnHeight * currentSliderColumn) + columnCompensation, sliderSize, sliderSize);
-    widthLabel.setBounds((rowWidth * currentSliderRow) + middleCompensation, (columnHeight * currentSliderColumn) + columnCompensation  - (reverbArea.getHeight() * (1.0 / 10.0)), sliderSize, reverbArea.getHeight() * (1.0 / 10.0));
+    widthSlider.setBounds(bounds);
+    widthLabel.setBounds(widthSlider.getBounds().getX(), (labelHeightSecondRow), widthSlider.getBounds().getWidth(), getLocalBounds().getHeight() * labelHeight);
 
 
-    auto   convolutionButtonBounds = convolutionArea;
-    auto convolutionToggleBounds = convolutionButtonBounds.removeFromLeft(convolutionButtonBounds.getWidth() * 0.5);
-    convolutionLabel.setBounds(convolutionToggleBounds.removeFromRight(convolutionToggleBounds.getWidth() * 0.8));
+    auto   convolutionButtonBounds = convolutionArea.removeFromRight(convolutionArea.getWidth() / 2.0);
 
-    convolutionToggle.setBounds(convolutionArea.removeFromLeft(convolutionArea.getWidth()* ToggleSize));
+    loadBtn.setBounds(convolutionButtonBounds);
+
+    auto convolutionToggleBounds = convolutionArea.removeFromLeft(getLocalBounds().getHeight() * ToggleSize);
+
+    convolutionToggle.setBounds(convolutionToggleBounds);
+
+
+
+    convolutionLabel.setBounds(convolutionArea);
+
+   
 
     convolutionLabel.setColour(juce::Label::textColourId, fontColor);
 
 
-    loadBtn.setBounds(convolutionButtonBounds);
 
 
 }

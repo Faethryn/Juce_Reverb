@@ -119,7 +119,11 @@ private:
 
     const double radialSize = (1.0 / 5.0);
 
-    const double ToggleSize = (1.0 / 8.0);
+    const double ToggleSize = (1.0 / 10.0);
+
+    const double convolutionSize = (1.0 / 6.0);
+
+    const double labelHeight = (1.0 / 25.0);
 
    /* juce::Image cheeseKnobImage = juce::ImageCache::getFromMemory(BinaryData::Cheese_knob_png, BinaryData::Cheese_knob_pngSize);*/
 
