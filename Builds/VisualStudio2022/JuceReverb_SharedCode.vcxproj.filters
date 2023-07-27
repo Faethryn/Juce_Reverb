@@ -5903,7 +5903,19 @@
     <None Include="..\..\..\..\..\..\Creative Cloud Files\Audio Programming\Cheese knob.png">
       <Filter>JuceReverb\BinaryData</Filter>
     </None>
+    <None Include="..\..\..\..\..\..\Creative Cloud Files\Audio Programming\Cheese knobV2.png">
+      <Filter>JuceReverb\BinaryData</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\Creative Cloud Files\Audio Programming\Cheese OFF.png">
+      <Filter>JuceReverb\BinaryData</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\Creative Cloud Files\Audio Programming\Cheese ON.png">
+      <Filter>JuceReverb\BinaryData</Filter>
+    </None>
     <None Include="..\..\..\..\..\..\Creative Cloud Files Personal\Audio Programming\Kraft single.png">
+      <Filter>JuceReverb\BinaryData</Filter>
+    </None>
+    <None Include="..\..\..\..\..\..\Creative Cloud Files\Audio Programming\Wood Board.png">
       <Filter>JuceReverb\BinaryData</Filter>
     </None>
     <None Include="..\..\..\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt">

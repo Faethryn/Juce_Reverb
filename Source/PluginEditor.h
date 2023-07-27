@@ -123,7 +123,7 @@ private:
 
    /* juce::Image cheeseKnobImage = juce::ImageCache::getFromMemory(BinaryData::Cheese_knob_png, BinaryData::Cheese_knob_pngSize);*/
 
-    juce::Colour fontColor = juce::Colours::crimson;
+    juce::Colour fontColor = juce::Colours::lightgoldenrodyellow;
 
     std::vector<juce::Component*> GetComps();
 

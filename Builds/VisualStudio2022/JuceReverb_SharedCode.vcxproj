@@ -3375,7 +3375,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\..\Creative Cloud Files\Audio Programming\Cheese knob.png"/>
+    <None Include="..\..\..\..\..\..\Creative Cloud Files\Audio Programming\Cheese knobV2.png"/>
+    <None Include="..\..\..\..\..\..\Creative Cloud Files\Audio Programming\Cheese OFF.png"/>
+    <None Include="..\..\..\..\..\..\Creative Cloud Files\Audio Programming\Cheese ON.png"/>
     <None Include="..\..\..\..\..\..\Creative Cloud Files Personal\Audio Programming\Kraft single.png"/>
+    <None Include="..\..\..\..\..\..\Creative Cloud Files\Audio Programming\Wood Board.png"/>
     <None Include="..\..\..\JUCE\modules\juce_audio_devices\native\oboe\CMakeLists.txt"/>
     <None Include="..\..\..\JUCE\modules\juce_audio_devices\native\oboe\README.md"/>
     <None Include="..\..\..\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt"/>

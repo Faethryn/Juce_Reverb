@@ -30,7 +30,7 @@ void LookAndFeel::drawRotarySlider(juce::Graphics& g,
 
     auto center = bounds.getCentre();
 
-    juce::Path p;
+   /* juce::Path p;
 
     juce::Rectangle<float> r;
 
@@ -40,22 +40,22 @@ void LookAndFeel::drawRotarySlider(juce::Graphics& g,
     r.setTop(bounds.getY());
     r.setBottom(center.getY());
 
-    p.addRectangle(r);
+    p.addRectangle(r);*/
 
     jassert(rotaryStartAngle < rotaryEndAngle);
 
     auto sliderAngRad = juce::jmap(sliderPosProportional, 0.f, 1.f, rotaryStartAngle, rotaryEndAngle);
 
-    p.applyTransform(juce::AffineTransform().rotated(sliderAngRad, center.getX(), center.getY()));
+  /*  p.applyTransform(juce::AffineTransform().rotated(sliderAngRad, center.getX(), center.getY()));
 
-    g.setColour(juce::Colour(232u, 199u, 66u));
+    g.setColour(juce::Colour(232u, 199u, 66u));*/
 
     //g.fillPath(p);
 
 
     juce::DrawableImage  knobImage ;
 
-    knobImage.setImage(juce::ImageCache::getFromMemory(BinaryData::Cheese_knob_png, BinaryData::Cheese_knob_pngSize));
+    knobImage.setImage(juce::ImageCache::getFromMemory(BinaryData::Cheese_knobV2_png, BinaryData::Cheese_knobV2_pngSize));
 
     knobImage.setBounds(x, y, width, height);
    
@@ -84,32 +84,36 @@ void LookAndFeel::drawToggleButton(juce::Graphics& g,
 
         auto bounds = toggleButton.getLocalBounds();
 
-        auto size = jmin(bounds.getWidth(), bounds.getHeight()) - 6;
-        auto r = bounds.withSizeKeepingCentre(size, size).toFloat();
+        auto size = bounds.getHeight();
 
-        float ang = 30.f; //30.f;
 
-        size -= 6;
+        if (bounds.getWidth() < bounds.getHeight())
+        {
+            size = bounds.getWidth();
+        }
+        bounds.setWidth(size);
+        bounds.setHeight(size);
 
-        powerButton.addCentredArc(r.getCentreX(),
-            r.getCentreY(),
-            size * 0.5,
-            size * 0.5,
-            0.f,
-            degreesToRadians(ang),
-            degreesToRadians(360.f - ang),
-            true);
+     
+        juce::DrawableImage  toggleImage;
 
-        powerButton.startNewSubPath(r.getCentreX(), r.getY());
-        powerButton.lineTo(r.getCentre());
+        if (toggleButton.getToggleState())
+        {
 
-        PathStrokeType pst(2.f, PathStrokeType::JointStyle::curved);
+       toggleImage.setImage(juce::ImageCache::getFromMemory(BinaryData::Cheese_ON_png, BinaryData::Cheese_ON_pngSize));
+     
+        }
+        else 
+        {
+            toggleImage.setImage(juce::ImageCache::getFromMemory(BinaryData::Cheese_OFF_png, BinaryData::Cheese_OFF_pngSize));
 
-        auto color = toggleButton.getToggleState() ? juce::Colours::crimson : Colours::dimgrey;
+        }
 
-        g.setColour(color);
-        g.strokePath(powerButton, pst);
-        g.drawEllipse(r, 2);
+        toggleImage.setBounds(bounds);
+
+    
+        g.drawImage(toggleImage.getImage(), bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), 0, 0, toggleImage.getImage().getWidth(), toggleImage.getImage().getHeight(), false);
+      
     
    
 }
@@ -228,7 +232,7 @@ void JuceReverbAudioProcessorEditor::paint (juce::Graphics& g)
 
     juce::DrawableImage  cheeseImage;
 
-    cheeseImage.setImage(juce::ImageCache::getFromMemory(BinaryData::Kraft_single_png, BinaryData::Kraft_single_pngSize));
+    cheeseImage.setImage(juce::ImageCache::getFromMemory(BinaryData::Wood_Board_png, BinaryData::Wood_Board_pngSize));
 
 
     auto bounds = getLocalBounds();
