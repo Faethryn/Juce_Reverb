@@ -128,6 +128,18 @@ void LookAndFeel::drawToggleButton(juce::Graphics& g,
    
 }
 
+
+void LookAndFeel::drawLabel(juce::Graphics& g, juce::Label& label) 
+{
+    // Set the text color for the label
+
+    
+   
+    label.setColour(juce::Label::textColourId, juce::Colours::black);
+    // Call the base class to draw the label with the updated color
+    LookAndFeel_V4::drawLabel(g, label);
+}
+
 //==============================================================================
 
 
@@ -145,6 +157,10 @@ void RotarySliderWithLabels::paint(juce::Graphics& g)
 
 
 }
+
+
+
+
 
 juce::Rectangle<int> RotarySliderWithLabels::getSliderBounds() const
 {
@@ -232,6 +248,10 @@ JuceReverbAudioProcessorEditor::JuceReverbAudioProcessorEditor(JuceReverbAudioPr
     wetLabel.setJustificationType(juce::Justification::centredTop);
     dryLabel.setJustificationType(juce::Justification::centredTop);
     widthLabel.setJustificationType(juce::Justification::centredTop);
+
+
+    roomSizeLabel.setColour(juce::Label::textColourId, fontColor);
+  
 
     setSize (500, 500);
 }

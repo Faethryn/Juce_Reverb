@@ -25,6 +25,10 @@ struct LookAndFeel : juce::LookAndFeel_V4
         juce::ToggleButton& toggleButton,
         bool shouldDrawButtonAsHighlighted,
         bool shouldDrawButtonAsDown) override;
+
+
+
+    void drawLabel(juce::Graphics& g, juce::Label& label) override;
 };
 
 
@@ -127,7 +131,7 @@ private:
 
    /* juce::Image cheeseKnobImage = juce::ImageCache::getFromMemory(BinaryData::Cheese_knob_png, BinaryData::Cheese_knob_pngSize);*/
 
-    juce::Colour fontColor = juce::Colours::lightgoldenrodyellow;
+    juce::Colour fontColor = juce::Colours::black;
 
     std::vector<juce::Component*> GetComps();
 
