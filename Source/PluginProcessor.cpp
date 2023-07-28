@@ -129,7 +129,8 @@ void JuceReverbAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     }
 
 
-   
+    leftChannelFifo.prepare(samplesPerBlock);
+    rightChannelFifo.prepare(samplesPerBlock);
 
   
     
@@ -219,6 +220,9 @@ void JuceReverbAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
          }
 
     }
+
+    leftChannelFifo.update(buffer);
+    rightChannelFifo.update(buffer);
     
 
 
