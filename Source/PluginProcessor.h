@@ -231,7 +231,8 @@ public:
     using BlockType = juce::AudioBuffer<float>;
     SingleChannelSampleFifo<BlockType> leftChannelFifo{ Channel::Left };
     SingleChannelSampleFifo<BlockType> rightChannelFifo{ Channel::Right };
-
+    SingleChannelSampleFifo<BlockType> leftInputChannelFifo{ Channel::Left };
+    SingleChannelSampleFifo<BlockType> rightInputChannelFifo{ Channel::Right };
    
 private:
 

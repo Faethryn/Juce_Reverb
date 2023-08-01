@@ -296,7 +296,7 @@ private:
 
     juce::Rectangle<int> getAnalysisArea();
 
-    PathProducer leftPathProducer, rightPathProducer;
+    PathProducer leftPathProducer, rightPathProducer, leftInputPathProducer, rightInputPathProducer;
 };
 
 //==============================================================================
@@ -369,7 +369,7 @@ private:
     LookAndFeel lnf;
 
 
-    SingleChannelSampleFifo<JuceReverbAudioProcessor::BlockType>* leftChannelFifo;
+   
 
 
 

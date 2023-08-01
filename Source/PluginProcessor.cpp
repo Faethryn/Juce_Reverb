@@ -131,6 +131,8 @@ void JuceReverbAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
 
     leftChannelFifo.prepare(samplesPerBlock);
     rightChannelFifo.prepare(samplesPerBlock);
+    leftInputChannelFifo.prepare(samplesPerBlock);
+    rightInputChannelFifo.prepare(samplesPerBlock);
 
   
     
@@ -197,7 +199,8 @@ void JuceReverbAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     juce::dsp::AudioBlock<float> inputBlock(buffer);
 
     // Create AudioBlock objects for the left and right output channels
-   
+    leftInputChannelFifo.update(buffer);
+    rightInputChannelFifo.update(buffer);
 
     if (reverbToggle == true)
     {

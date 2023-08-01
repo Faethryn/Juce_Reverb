@@ -147,7 +147,9 @@ void LookAndFeel::drawLabel(juce::Graphics& g, juce::Label& label)
 ResponseCurveComponent::ResponseCurveComponent(JuceReverbAudioProcessor& p) :
     audioProcessor(p),
     leftPathProducer(audioProcessor.leftChannelFifo),
-    rightPathProducer(audioProcessor.rightChannelFifo)
+    rightPathProducer(audioProcessor.rightChannelFifo),
+    leftInputPathProducer(audioProcessor.leftInputChannelFifo),
+    rightInputPathProducer(audioProcessor.rightInputChannelFifo)
 {
     const auto& params = audioProcessor.getParameters();
     for (auto param : params)
@@ -234,6 +236,18 @@ void ResponseCurveComponent::paint(juce::Graphics& g)
 
         g.setColour(Colour(215u, 201u, 134u));
         g.strokePath(rightChannelFFTPath, PathStrokeType(1.f));
+
+        auto leftInputChannelFFTPath = leftInputPathProducer.getPath();
+        leftInputChannelFFTPath.applyTransform(AffineTransform().translation(responseArea.getX(), responseArea.getY()));
+
+        g.setColour(juce::Colours::red); 
+        g.strokePath(leftInputChannelFFTPath, PathStrokeType(1.f));
+
+        auto rightInputChannelFFTPath = rightInputPathProducer.getPath();
+        rightInputChannelFFTPath.applyTransform(AffineTransform().translation(responseArea.getX(), responseArea.getY()));
+
+        g.setColour(juce::Colours::green);
+        g.strokePath(rightInputChannelFFTPath, PathStrokeType(1.f));
     }
 
     g.setColour(Colours::white);
@@ -458,6 +472,8 @@ void ResponseCurveComponent::timerCallback()
 
         leftPathProducer.process(fftBounds, sampleRate);
         rightPathProducer.process(fftBounds, sampleRate);
+        leftInputPathProducer.process(fftBounds, sampleRate);
+        rightInputPathProducer.process(fftBounds, sampleRate);
     }
 
     if (parametersChanged.compareAndSetBool(false, true))
